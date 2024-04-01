@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -x
 
+set -e
+set -u
+
+if [ "$#" = "0" ]; then
+    echo "Nodes are:"
+    kubectl get nodes -o name | cut -d/  -f 2
+    exit 0
+fi
+
 node=${1}
 nodeName=$(kubectl get node ${node} -o template --template='{{index .metadata.labels "kubernetes.io/hostname"}}')
 nodeSelector='"nodeSelector": { "kubernetes.io/hostname": "'${nodeName:?}'" },'
